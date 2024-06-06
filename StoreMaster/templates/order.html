@@ -1,0 +1,36 @@
+{% extends "base.html" %} {% block head %}
+<title>Orders</title>
+{% endblock %} {% block content %}
+
+<table>
+  <caption>
+    Orders
+  </caption>
+  <tr>
+    <th>Order_ID</th>
+    <th>Customer_ID</th>
+    <th>Total</th>
+    <th>Created Date</th>
+    <th>Processed Date</th>
+    <th>Detail</th>
+  </tr>
+  {% for order in orders %}
+  <tr>
+    <td>{{ order.oid }}</td>
+    <td>{{ order.customer_id }}</td>
+    <td>{{ order.total }}</td>
+    <td>{{ order.created }}</td>
+    <td>{{ order.processed }}</td>
+    <td>
+      <a href="{{ url_for('orders_html.order_detail',order_id=order.oid) }}"
+        >details</a
+      >
+    </td>
+  </tr>
+  {%else%}
+  <tr>
+    <td colspan="6">No results</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

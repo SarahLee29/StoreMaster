@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block head %}
+<title>Customers' details</title>
+{% endblock %} {% block content %}
+
+<table>
+  <caption>
+    Customer Detail
+  </caption>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Phone</th>
+    <th>Balance</th>
+    <th>Order</th>
+  </tr>
+
+  <tr>
+    <td>{{ target_customer.cid }}</td>
+    <td>{{ target_customer.name }}</td>
+    <td>{{ target_customer.phone }}</td>
+    <td>{{ target_customer.balance }}</td>
+    <td>
+      <a
+        href="{{ url_for('orders_html.order_customer_detail',customer_id=target_customer.cid)}}"
+        >Orders</a
+      >
+    </td>
+  </tr>
+</table>
+{% endblock %}

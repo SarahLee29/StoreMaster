@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- reference "style.css" located in the "static" directory using the url_for function-->
+    <!-- generate the correct URL for this static file -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <!-- jinja2 syntax -->
+    {% block head %} {% endblock %}
+  </head>
+  <body>
+    <a href="{{ url_for('home_html.home') }}" class="navbar-item"> Home </a>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('app.profile') }}" class="navbar-item"> Profile </a>
+    <a href="{{ url_for('customers_html.customer_list') }}">Customers</a>
+    <a href="{{ url_for('products_html.product_list') }}">Products</a>
+    <a href="{{ url_for('orders_html.order_list') }}">Orders</a>
+    {% endif %} {% if not current_user.is_authenticated %}
+    <a href="{{ url_for('auth.login') }}" class="navbar-item"> Login </a>
+    <a href="{{ url_for('auth.signup') }}" class="navbar-item"> Sign Up </a>
+    {% endif %} {% if current_user.is_authenticated %}
+    <a href="{{ url_for('auth.logout') }}" class="navbar-item"> Logout </a>
+    {% endif %} {% block content %} {% endblock %}
+  </body>
+</html>
