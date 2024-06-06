@@ -1,31 +1,34 @@
-{% extends "base.html" %} {% block head %}
-<title>Customers</title>
-{% endblock %} {% block content %}
+{% extends "base.html" %}
 
-<table>
-  <caption>
-    Customers
-  </caption>
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Phone</th>
-    <th>Balance</th>
-    <th>Detail</th>
-  </tr>
-  {% for customer in customers %}
-  <tr>
-    <td>{{ customer.cid }}</td>
-    <td>{{ customer.name }}</td>
-    <td>{{ customer.phone }}</td>
-    <td>{{ customer.balance }}</td>
-    <td>
-      <a
-        href="{{ url_for('customers_html.customer_detail',customer_id=customer.cid) }}"
-        >details</a
-      >
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+{% block head %}
+<title>Customers</title>
 {% endblock %}
+
+{% block content %}
+<div class="block-content">
+  <table>
+    <caption>
+      Customers
+    </caption>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Balance</th>
+      <th>Detail</th>
+    </tr>
+    {% for customer in customers %}
+    <tr>
+      <td>{{ customer.cid }}</td>
+      <td>{{ customer.name }}</td>
+      <td>{{ customer.phone }}</td>
+      <td>{{ customer.balance }}</td>
+      <td>
+        <a href="{{ url_for('customers_html.customer_detail', customer_id=customer.cid) }}">details</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
+

@@ -1,6 +1,5 @@
 import datetime
 from sqlalchemy import  Float, Numeric, ForeignKey, Integer, String, DateTime
-# from sqlalchemy.sql import functions as func
 from sqlalchemy.orm import mapped_column, relationship
 from . import db
 from decimal import Decimal

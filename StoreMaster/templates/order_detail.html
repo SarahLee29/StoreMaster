@@ -1,71 +1,68 @@
-{% extends "base.html" %} {% block head %}
+{% extends "base.html" %}
+
+{% block head %}
 <title>Orders' details</title>
-{% endblock %} {% block content %}
+{% endblock %}
 
-<table>
-  <caption>
-    Order Detail
-  </caption>
-  <tr>
-    <th>Order_ID</th>
-    <th>Product Name</th>
-    <th>Quantity Ordered</th>
-    <th>Quantity Available</th>
+{% block content %}
+<div class="block-content">
+  <table>
+    <caption>
+      Order Detail
+    </caption>
+    <tr>
+      <th>Order_ID</th>
+      <th>Product Name</th>
+      <th>Quantity Ordered</th>
+      <th>Quantity Available</th>
+      <th>Created Date</th>
+      <th>Processed Date</th>
+      <th>Customer Detail</th>
+    </tr>
+    {% for record in order.records %}
+    <tr>
+      <td>{{ order.oid }}</td>
+      <td>{{ record.product.name }}</td>
+      <td>{{ record.quantity }}</td>
+      <td>{{ record.product.available }}</td>
+      <td>{{ order.created }}</td>
+      <td>{{ order.processed }}</td>
+      <td>
+        <a href="{{ url_for('customers_html.customer_detail', customer_id=order.customer_id) }}">Go to Customer: {{ order.customer_id }}</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="7">No results</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <h2>Estimate total: {{ order.estimate_total() }}</h2>
 
-    <th>Created Date</th>
-    <th>Processed Date</th>
-    <th>Customer Detail</th>
-  </tr>
-  {% for record in order.records %}
-  <tr>
-    <td>{{ order.oid }}</td>
-    <td>{{ record.product.name }}</td>
-    <td>{{ record.quantity }}</td>
-    <td>{{ record.product.available }}</td>
-    <td>{{ order.created }}</td>
-    <td>{{ order.processed }}</td>
-    <td>
-      <a
-        href="{{ url_for('customers_html.customer_detail',customer_id=order.customer_id) }}"
-        >Go to Customer: {{ order.customer_id }}</a
-      >
-    </td>
-  </tr>
+  {% set class_name = "pending" %}
+  {% if order.processed %}
+  {% set class_name = "processed" %}
+  {% endif %}
+  <h3 class="{{ class_name }}">Status: {{ class_name }}</h3>
+
+  <form method="POST" action="{{ url_for('orders_html.orders_delete', order_id=order.oid) }}">
+    <button type="submit">Delete</button>
+  </form>
+
+  {% if not order.processed %}
+  <p>What strategy do you want if some product is not enough in stock?</p>
+
+  <form method="POST" action="{{ url_for('orders_html.orders_process', order_id=order.oid) }}">
+    <label for="adjust">Adjust (Default)</label>
+    <input type="radio" id="adjust" name="strategy" value="adjust" /><br /><br />
+    <label for="ignore">Ignore</label>
+    <input type="radio" id="ignore" name="strategy" value="ignore" /><br /><br />
+    <label for="reject">Reject</label>
+    <input type="radio" id="reject" name="strategy" value="reject" /><br /><br />
+    <button type="submit">Process</button>
+  </form>
   {% else %}
-  <tr>
-    <td colspan="6">No results</td>
-  </tr>
-  {% endfor %}
-</table>
-<h2>Estimate total: {{ order.estimate_total() }}</h2>
-
-{% set class_name = "pending" %} {% if order.processed %} {% set class_name =
-"processed" %} {% endif %}
-<h3 class="{{ class_name }}">Status:{{class_name}}</h3>
-
-<form
-  method="POST"
-  action="{{ url_for('orders_html.orders_delete', order_id=order.oid) }}"
->
-  <button type="submit">Delete</button>
-</form>
-
-{% if not order.processed %}
-<p>what strategy do you want if some product is not enough in stock?</p>
-
-<form
-  method="POST"
-  action="{{ url_for('orders_html.orders_process', order_id=order.oid) }}"
->
-  <label for="adjust">Adjust (Default)</label>
-  <input type="radio" id="adjust" name="strategy" value="adjust" /><br /><br />
-  <label for="ignore">Ignore</label>
-  <input type="radio" id="ignore" name="strategy" value="ignore" /><br /><br />
-  <label for="ignore">Reject</label>
-  <input type="radio" id="reject" name="strategy" value="reject" /><br /><br />
-  <button type="submit">Process</button>
-</form>
-
-{% else %}
-<p>This order has been processed!</p>
-{% endif %} {% endblock %}
+  <p>This order has been processed!</p>
+  {% endif %}
+</div>
+{% endblock %}
