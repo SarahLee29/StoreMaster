@@ -13,6 +13,7 @@ class Customer(db.Model):
     name = mapped_column(String(200), nullable=False, unique=True)
     phone = mapped_column(String(20), nullable=False)
     balance = mapped_column(Numeric(10, 2), nullable=False, default=200)
+    owner= mapped_column(String(200),nullable=False,default="null")
     orders = relationship("Order", back_populates="customer",
                           cascade="all, delete")
 

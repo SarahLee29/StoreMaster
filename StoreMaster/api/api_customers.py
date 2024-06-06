@@ -1,6 +1,8 @@
-from flask import Blueprint, jsonify, request, url_for
+from flask import Blueprint, jsonify, request, session, url_for
 from .. import db
 from ..models import Customer
+from flask_login import current_user,login_required
+from ..utils import token_required
 
 api_customers_bp = Blueprint("api_customers", __name__)
 
@@ -9,7 +11,9 @@ api_customers_bp = Blueprint("api_customers", __name__)
 
 
 @api_customers_bp.route("/", methods=["GET"])
-def customers_json():
+@token_required
+def customers_json(current_user):
+    print("customer get",current_user)
     statement = db.select(Customer).order_by(Customer.cid)
     results = db.session.execute(statement)
     customers = []  # output variable
@@ -22,15 +26,22 @@ def customers_json():
 
 
 @api_customers_bp.route("/", methods=["POST"])
-def customers_create():
-    data = request.json
-    if "name" not in data or not isinstance(data["name"], str) or not isinstance(data["phone"], str):
-        return "Invalid request", 400
-    else:
-        customer = Customer(name=data["name"], phone=data["phone"])
-        db.session.add(customer)
-        db.session.commit()
-        return f"Successfully added! The number of customers is {db.session.query(Customer).count()}.", 201
+@token_required
+def customers_create(current_user):
+    # print(session["useremail"])
+    try:
+        print("called")
+        data = request.json
+        if "name" not in data or not isinstance(data["name"], str) or not isinstance(data["phone"], str):
+            return "Invalid request", 400
+        else:
+            customer = Customer(name=data["name"], phone=data["phone"])
+            db.session.add(customer)
+            db.session.commit()
+            return f"Successfully added! The number of customers is {db.session.query(Customer).count()}.", 201
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return "An error occurred", 500
 
 # access a specific customer by customer_id
 # prefix:/api/customers

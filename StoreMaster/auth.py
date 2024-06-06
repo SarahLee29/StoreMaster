@@ -1,6 +1,7 @@
-from flask import Blueprint, flash, redirect, render_template,request, url_for
+from flask import Blueprint, current_app, flash, jsonify, make_response, redirect, render_template,request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-from . import db
+import jwt
+from . import db, create_app
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -15,21 +16,31 @@ def login():
 
 @auth.route('/login', methods=['POST'])
 def login_post():
+    # authen = request.get_json()
     email=request.form.get("email")
     password=request.form.get("password")
     remember = True if request.form.get('remember') else False
-    print("remember",remember)
+    
+    # if not authen or not authen.get('email') or not authen.get('password'):
+    #     return make_response('Could not verify!', 401, {'WWW-Authenticate': 'Basic-realm= "Login required!"'})
 
     user=User.query.filter_by(email=email).first()
 
     if not user or not check_password_hash(user.password, password):
         flash('Please check your login details and try again.')
         return redirect(url_for('auth.login'))
-
+    
+    token = jwt.encode({'id': user.id}, current_app.config['SECRET_KEY'], 'HS256')
+    print("1",user.id)
     login_user(user, remember=remember)
-    print("redirect")
-    print(current_user.name)
+    session['token'] = token
+    print(token)
     return redirect(url_for('app.profile',name=current_user.name))
+
+@auth.route('/token', methods=['GET'])
+@login_required
+def get_token():
+    return session["token"]
 
 @auth.route('/signup')
 def signup():

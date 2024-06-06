@@ -68,6 +68,13 @@ Users are allowed to choose different process strategies "adjust", "ignore" or "
                     {"name": "lemon", "quantity": 1},
                     {"name": "chicken breast", "quantity": 1}]}
     ```
+* add products
+
+`http://localhost:5000/api/products`
+
+Data example: 
+
+Data example: `{"name":"Pork","price":5.99}`
 
 ### Send a PUT Request
 *  update a customer's balance
