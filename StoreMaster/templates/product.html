@@ -13,12 +13,14 @@
     <th>Available</th>
   </tr>
   {% for product in products %}
+  {% if current_user.email==product.owner %}
   <tr>
     <td>{{ product.pid }}</td>
     <td>{{ product.name }}</td>
     <td>{{ product.price }}</td>
     <td>{{ product.available }}</td>
   </tr>
+  {% endif %}
   {% endfor %}
 </table>
 </div>

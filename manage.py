@@ -20,14 +20,14 @@ def main():
             for customer in customers_csv:
                 customer_instance = Customer(
                     # create objects to store in the database
-                    name=customer["name"], phone=customer["phone"])
+                    name=customer["name"], phone=customer["phone"],owner=customer["owner"])
                 db.session.add(customer_instance)
 
-        with open('data/products.csv', newline='') as profile:
+        with open('data/products_only.csv', newline='') as profile:
             products_csv = csv.DictReader(profile)
             for product in products_csv:
                 product_instance = Product(
-                    name=product["name"], price=product["price"])
+                    name=product["name"], price=product["price"],owner=product["owner"])
                 db.session.add(product_instance)
 
         # with open('data/products.csv', newline='') as profile:
@@ -38,40 +38,40 @@ def main():
         #         db.session.add(cat_instance)
 
 
-# ================ randomly create tables =====================
-        customers = []
-        orders = []
-        products = []
-        items = []
-        for i in range(1, 11):
-            # Find a random customer
-            cust_stmt = db.select(Customer).order_by(func.random()).limit(1)
-            rand_customer = db.session.execute(cust_stmt).scalar()
-            customers.append(rand_customer)
-            # Make an order
-            rand_order = Order(customer=rand_customer)
-            orders.append(rand_order)
-            db.session.add(rand_order)
-            # Find a random product
-            prod_stmt = db.select(Product).order_by(func.random()).limit(1)
-            rand_product_1 = db.session.execute(prod_stmt).scalar()
-            # Find a random quantity
-            rand_qty_1 = random.randint(10, 20)
-            # make a record
-            rand_record_1 = ProductOrder(
-                order=rand_order, product=rand_product_1, quantity=rand_qty_1)
-            db.session.add(rand_record_1)
+# ================ randomly create orders =====================
+        # customers = []
+        # orders = []
+        # products = []
+        # items = []
+        # for i in range(1, 11):
+        #     # Find a random customer
+        #     cust_stmt = db.select(Customer).order_by(func.random()).limit(1)
+        #     rand_customer = db.session.execute(cust_stmt).scalar()
+        #     customers.append(rand_customer)
+        #     # Make an order
+        #     rand_order = Order(customer=rand_customer)
+        #     orders.append(rand_order)
+        #     db.session.add(rand_order)
+        #     # Find a random product
+        #     prod_stmt = db.select(Product).order_by(func.random()).limit(1)
+        #     rand_product_1 = db.session.execute(prod_stmt).scalar()
+        #     # Find a random quantity
+        #     rand_qty_1 = random.randint(10, 20)
+        #     # make a record
+        #     rand_record_1 = ProductOrder(
+        #         order=rand_order, product=rand_product_1, quantity=rand_qty_1)
+        #     db.session.add(rand_record_1)
 
-            prod_stmt = db.select(Product).order_by(func.random()).limit(1)
-            rand_product_2 = db.session.execute(prod_stmt).scalar()
-            products.append(rand_product_1)
-            products.append(rand_product_2)
-            rand_qty_2 = random.randint(10, 20)
-            rand_record_2 = ProductOrder(
-                order=rand_order, product=rand_product_2, quantity=rand_qty_2)
-            items.append(rand_record_1)
-            items.append(rand_record_2)
-            db.session.add(rand_record_2)
+        #     prod_stmt = db.select(Product).order_by(func.random()).limit(1)
+        #     rand_product_2 = db.session.execute(prod_stmt).scalar()
+        #     products.append(rand_product_1)
+        #     products.append(rand_product_2)
+        #     rand_qty_2 = random.randint(10, 20)
+        #     rand_record_2 = ProductOrder(
+        #         order=rand_order, product=rand_product_2, quantity=rand_qty_2)
+        #     items.append(rand_record_1)
+        #     items.append(rand_record_2)
+        #     db.session.add(rand_record_2)
 
         db.session.commit()
 

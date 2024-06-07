@@ -13,12 +13,12 @@ api_customers_bp = Blueprint("api_customers", __name__)
 @api_customers_bp.route("/", methods=["GET"])
 @token_required
 def customers_json(current_user):
-    print("customer get",current_user)
     statement = db.select(Customer).order_by(Customer.cid)
     results = db.session.execute(statement)
     customers = []  # output variable
     for customer in results.scalars():
-        customers.append(customer.to_json())
+        if current_user.email==customer.owner:
+            customers.append(customer.to_json())
     return jsonify(customers)
 
 # create a new customer
@@ -28,17 +28,15 @@ def customers_json(current_user):
 @api_customers_bp.route("/", methods=["POST"])
 @token_required
 def customers_create(current_user):
-    # print(session["useremail"])
     try:
-        print("called")
         data = request.json
         if "name" not in data or not isinstance(data["name"], str) or not isinstance(data["phone"], str):
             return "Invalid request", 400
         else:
-            customer = Customer(name=data["name"], phone=data["phone"])
+            customer = Customer(name=data["name"], phone=data["phone"],owner=current_user.email)
             db.session.add(customer)
             db.session.commit()
-            return f"Successfully added! The number of customers is {db.session.query(Customer).count()}.", 201
+            return "Successfully added!", 201
     except Exception as e:
         print(f"An error occurred: {e}")
         return "An error occurred", 500
@@ -48,22 +46,27 @@ def customers_create(current_user):
 
 
 @api_customers_bp.route("/<int:customer_id>", methods=["GET"])
-def customer_detail_json(customer_id):
+@token_required
+def customer_detail_json(current_user,customer_id):
     customer = db.get_or_404(Customer, customer_id,
                              description="The customer id is not found!")
-    return customer.to_json()
-
+    if current_user.email==customer.owner:
+        return customer.to_json()
+    return "You don't have this customer!"
 
 # delete a specific customer by id
 # prefix:/api/customers
 
 @api_customers_bp.route("/<int:customer_id>", methods=["DELETE"])
-def customer_delete(customer_id):
+@token_required
+def customer_delete(current_user,customer_id):
     customer = db.get_or_404(Customer, customer_id,
                              description="The customer id is not found!")
-    db.session.delete(customer)
-    db.session.commit()
-    return "", 204
+    if current_user.email==customer.owner:
+        db.session.delete(customer)
+        db.session.commit()
+        return "", 204
+    return "You don't have this customer!"
 
 
 # when a PUT request is made to this URL, the customer_put function will be invoked
@@ -72,7 +75,8 @@ def customer_delete(customer_id):
 
 
 @api_customers_bp.route("/<int:customer_id>", methods=["PUT"])
-def customer_put(customer_id):
+@token_required
+def customer_put(current_user,customer_id):
     data = request.json
     customer = db.get_or_404(Customer, customer_id,
                              description="The customer id is not found!")
@@ -80,6 +84,8 @@ def customer_put(customer_id):
         return "Invalid request", 400
 
     else:
-        customer.balance = data["balance"]
-        db.session.commit()
-        return "", 204
+        if current_user.email==customer.owner:
+            customer.balance = data["balance"]
+            db.session.commit()
+            return "", 204
+        return "You don't have this customer!"

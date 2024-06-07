@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, request
+
+from ..utils import token_required
 from .. import db
 from ..models import Order, Customer, ProductOrder, Product
 
@@ -9,7 +11,8 @@ api_orders_bp = Blueprint("api_orders", __name__)
 
 
 @api_orders_bp.route('/', methods=['POST'])
-def orders_create():
+@token_required
+def orders_create(current_user):
     data = request.json
     # got error??????????????
     # cust = db.get_or_404(Customer, data["customer_id"])
@@ -28,7 +31,7 @@ def orders_create():
         return "Invalid request", 400
 
     else:
-        order = Order(customer_id=data["customer_id"])
+        order = Order(customer_id=data["customer_id"],owner=current_user.email)
         db.session.add(order)
         for item in data["items"]:
             product = db.session.execute(db.select(Product).where(
@@ -44,17 +47,20 @@ def orders_create():
 
 
 @api_orders_bp.route('/<int:order_id>', methods=['PUT'])
-def order_process(order_id):
+@token_required
+def order_process(current_user,order_id):
     data = request.json
     if "process" not in data:
         return "Invalid request, must provide 'process'", 400
     order = db.get_or_404(Order, order_id)
     # list comprehension
     # if no strategy is provided in request, the strategy will be set to "adjust"
-    strategy = data["strategy"] if "strategy" in data else "adjust"
-    response = order.process_order(data["process"], strategy)
-    db.session.commit()
-    if response == True:
-        return "successfully processed!"
-    else:
-        return response
+    if current_user.email==order.owner:
+        strategy = data["strategy"] if "strategy" in data else "adjust"
+        response = order.process_order(data["process"], strategy)
+        db.session.commit()
+        if response == True:
+            return "successfully processed!"
+        else:
+            return response
+    return "You don't have this order!"

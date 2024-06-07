@@ -34,6 +34,7 @@ class Product(db.Model):
     name = mapped_column(String(200), nullable=False, unique=True)
     price = mapped_column(Float, nullable=False)
     available = mapped_column(Integer, nullable=False, default=500)
+    owner= mapped_column(String(200),nullable=False,default="null")
     records = relationship("ProductOrder", back_populates="product",
                            cascade="all, delete")
 
@@ -67,6 +68,7 @@ class Order(db.Model):
     processed = mapped_column(DateTime, nullable=True)
     customer = relationship(
         "Customer", back_populates="orders")
+    owner= mapped_column(String(200),nullable=False,default="null")
     records = relationship(
         "ProductOrder", back_populates="order", cascade="all, delete")
 

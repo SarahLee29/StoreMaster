@@ -31,7 +31,6 @@ def login_post():
         return redirect(url_for('auth.login'))
     
     token = jwt.encode({'id': user.id}, current_app.config['SECRET_KEY'], 'HS256')
-    print("1",user.id)
     login_user(user, remember=remember)
     session['token'] = token
     print(token)

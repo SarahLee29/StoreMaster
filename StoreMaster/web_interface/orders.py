@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, redirect, request, render_template, url_for
+from flask_login import login_required, current_user
 from .. import db
 from ..models import Order, ProductOrder
 
@@ -9,11 +10,12 @@ orders_bp = Blueprint("orders_html", __name__)
 
 
 @orders_bp.route('/', methods=['GET'])
+@login_required
 def order_list():
     statement = db.select(Order).order_by(Order.oid)
     records = db.session.execute(statement)
     orders = records.scalars()
-    return render_template("order.html", orders=orders)
+    return render_template("order.html", orders=orders,current_user=current_user)
 
 
 # access a specific order by customer_id

@@ -1,16 +1,16 @@
-name,price
-apple,1.49
-bananas,3.49
-lemon,1.0
-orange,1.19
-raspberries,7.99
-potato,1.49
-onions,3.99
-tomato,2.99
-bread,1.59
-chicken breast,10.78
-chicken thigh,8.99
-ground beef,6.99
-cheese,8.99
-milk,3.49
-eggs,4.49
+name,price,owner
+apple,1.49, nick123@gmail.com
+bananas,3.49, nick123@gmail.com
+lemon,1.0,marry123@gmail.com
+orange,1.19, nick123@gmail.com
+raspberries,7.99, nick123@gmail.com
+potato,1.49, nick123@gmail.com
+onions,3.99, nick123@gmail.com
+tomato,2.99,marry123@gmail.com
+bread,1.59,marry123@gmail.com
+chicken breast,10.78,marry123@gmail.com
+chicken thigh,8.99,marry123@gmail.com
+ground beef,6.99,marry123@gmail.com
+cheese,8.99,marry123@gmail.com
+milk,3.49,marry123@gmail.com
+eggs,4.49,marry123@gmail.com

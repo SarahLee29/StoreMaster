@@ -9,12 +9,13 @@ customers_bp = Blueprint("customers_html", __name__)
 # prefix:/customers
 
 @customers_bp.route("/", methods=["GET"])
+@login_required
 def customer_list():
     statement = db.select(Customer).order_by(Customer.cid)  # create a query
     records = db.session.execute(statement)  # run the query
-    # create an iterable for records containing scalar values
+    # create an iterable for records containing scalar vaslues
     results = records.scalars()
-    return render_template("customer.html", customers=results)
+    return render_template("customer.html", customers=results,current_user=current_user)
 
 
 # access a specific customer by customer id

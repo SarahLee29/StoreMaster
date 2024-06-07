@@ -1,10 +1,6 @@
-{% extends "base.html" %}
-
-{% block head %}
+{% extends "base.html" %} {% block head %}
 <title>Customers</title>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="block-content">
   <table>
     <caption>
@@ -17,18 +13,20 @@
       <th>Balance</th>
       <th>Detail</th>
     </tr>
-    {% for customer in customers %}
+    {% for customer in customers %} {% if current_user.email==customer.owner %}
     <tr>
       <td>{{ customer.cid }}</td>
       <td>{{ customer.name }}</td>
       <td>{{ customer.phone }}</td>
       <td>{{ customer.balance }}</td>
       <td>
-        <a href="{{ url_for('customers_html.customer_detail', customer_id=customer.cid) }}">details</a>
+        <a
+          href="{{ url_for('customers_html.customer_detail', customer_id=customer.cid) }}"
+          >details</a
+        >
       </td>
     </tr>
-    {% endfor %}
+    {% endif %} {% endfor %}
   </table>
 </div>
 {% endblock %}
-
