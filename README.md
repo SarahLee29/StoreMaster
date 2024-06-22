@@ -4,16 +4,22 @@ StoreMaster is an application allowing users to manage their stores, such as, li
 
 To test it, please run the following commands in sequence:
 
-    python manage.py (this file seeds the database with testing data) or python setup.py (this file just create an empty database)
+    In root folder:
 
-    FLASK_APP=StoreMaster
+    python manage.py (this file seeds the database with testing data) or python setup.py (this file just create an empty database)
+    
+    source store/Scripts/activate ('store' is the virtual environment name)
+
+    export FLASK_APP=StoreMaster
 
     flask run
 
     if you run manage.py, please signup with the following info and then login:
     
     email: marry123@gmail.com
+
     name: anything you want
+    
     ps: anything you want 
 
 # Highlights
@@ -26,7 +32,7 @@ To test it, please run the following commands in sequence:
 
 * Users are allowed to choose if to be remembered, if yes, although they close the browser they don't need to sign in again in a specific time period.
 
-* Different acess permissions are set to different pages based on users login status, that is, being logged in or not. 
+* Different access permissions are set to different pages based on users login status, that is, being logged in or not. 
 
 ## Token-based Authentication
 
